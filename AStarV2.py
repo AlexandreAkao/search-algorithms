@@ -1,8 +1,9 @@
 import pygame
 import math
 from queue import PriorityQueue
+from a_star import AStar
 
-WIDTH = 1000
+WIDTH = 800
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("A*")
 
@@ -85,7 +86,6 @@ class Node:
         if self.col > 0 and not grid[self.row][self.col - 1].is_barrier(): #Vizinho da esquerda
             self.neighbors.append(grid[self.row][self.col - 1])
 
-
     #Compara os pontos
     def __lt__(self, other):
         return False
@@ -94,20 +94,21 @@ def heuristic(p1, p2):
     x1, y1 = p1
     x2, y2 = p2
     #Caminho rápido
-    #return abs(x1 - x2) + abs(y1 - y2)
+    return abs(x1 - x2) + abs(y1 - y2)
     #Caminho curto
-    return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+    #return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
 def reconstruct_path(came_from, current, draw):
     while current in came_from:
         current = came_from[current]
         current.make_path()
         #com animação
-        #draw()
-    draw()
-
+        draw()
+    #draw()
 
 #https://en.wikipedia.org/wiki/A*_search_algorithm#:~:text=*%2Dlike%20algorithm.-,Description,shortest%20time%2C%20etc.).
+# a_star(lambda: draw(window, grid, ROWS, width), grid, start, end)
+
 def a_star(draw, grid, start, end):
     count = 0
     open_set = PriorityQueue()
@@ -151,13 +152,12 @@ def a_star(draw, grid, start, end):
                     neighbor.make_open()
 
         #Animação da busca        
-        #draw()
+        draw()
 
         if current != start:
             current.make_closed()
 
     return False
-
 
 def make_grid(rows, width):
     grid = []
@@ -208,7 +208,7 @@ def main(window, width):
     
     draw(window, grid, ROWS, width)
     while run:
-        #draw(window, grid, ROWS, width)
+        draw(window, grid, ROWS, width)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
