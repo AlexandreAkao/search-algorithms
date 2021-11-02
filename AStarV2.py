@@ -1,7 +1,10 @@
 import pygame
-import math
 from queue import PriorityQueue
 from a_star import AStar
+from graph import Graph
+import sys 
+
+sys.setrecursionlimit(5000) 
 
 WIDTH = 800
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
@@ -106,6 +109,12 @@ def reconstruct_path(came_from, current, draw):
         draw()
     #draw()
 
+def reconstruct_path_alg(solution, draw):
+    solution.pop()
+    for node in solution:
+        node.make_path()
+        draw()
+
 #https://en.wikipedia.org/wiki/A*_search_algorithm#:~:text=*%2Dlike%20algorithm.-,Description,shortest%20time%2C%20etc.).
 # a_star(lambda: draw(window, grid, ROWS, width), grid, start, end)
 
@@ -197,18 +206,20 @@ def get_clicked_pos(pos, rows, width):
     return row, col
 
 def main(window, width):
-    ROWS = 50
+    ROWS = 20
     grid = make_grid(ROWS, width)
 
     start = None
     end = None
-
     run = True
     started = False
-    
+
     draw(window, grid, ROWS, width)
+
     while run:
+
         draw(window, grid, ROWS, width)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -217,10 +228,12 @@ def main(window, width):
                 continue
 
             draw(window, grid, ROWS, width)
+
             if pygame.mouse.get_pressed()[0]: #Botão esquerdo do mouse
                 pos = pygame.mouse.get_pos()
                 col, row = get_clicked_pos(pos, ROWS, width)
                 node = grid[row][col]
+
                 if not start and node != end:
                     start = node
                     start.make_start()
@@ -250,7 +263,10 @@ def main(window, width):
                     
                     #Lambda é uma variável que chama uma função
                     if start != None and end != None:
-                        a_star(lambda: draw(window, grid, ROWS, width), grid, start, end)
+                        graph = Graph(grid, start, end)
+
+                        AStar(graph).draw_solve(lambda: draw(window, grid, ROWS, width), reconstruct_path_alg)
+                        # a_star(lambda: draw(window, grid, ROWS, width), grid, start, end)
 
                 if event.key == pygame.K_ESCAPE:
                     start = None

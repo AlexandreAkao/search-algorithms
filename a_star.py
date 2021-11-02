@@ -91,12 +91,11 @@ class AStar:
     def sort_frontier(self, sort_by):
         self.frontier.sort(key=sort_by)
 
-    def draw_solve(self, draw):
+    def draw_solve(self, draw, reconstruct_path):
         sort_by = self.return_cost_and_heuristic
         goal_state = None
         solution_cost = 0
         solution = []
-
         self.frontier.clear()
         self.visited.clear()
         self.frontier.append(self.graph.root)
@@ -110,8 +109,9 @@ class AStar:
             if self.is_goal(current_node):
                 goal_state = current_node
                 break
-
-            self.add_to_frontier(current_node, draw)
+            
+            # self.graph.maze.grid[current_node.x][current_node.y].make_closed()
+            self.add_to_frontier(current_node)
 
         if goal_state is not None:
 
@@ -121,6 +121,7 @@ class AStar:
                 solution.insert(0, current)
                 current = current.parent
 
+            # reconstruct_path(solution, draw)
             self.print_results(solution_cost, solution, self.visited)
         else:
             print("No goal state found.")
