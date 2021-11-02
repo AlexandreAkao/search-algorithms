@@ -13,8 +13,8 @@ if __name__ == "__main__":
 
     # ====================================
     # ======= Busca em Profundidade ======
-    # search.depth_first_search()
-    # DFS(graph).solve()
+    search.depth_first_search()
+    DFS(graph).solve()
     # ====================================
     
     # ====================================

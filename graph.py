@@ -1,6 +1,7 @@
 import sys
 from maze import Maze
 
+
 class Node:
     def __init__(self):
         self.x = 0
@@ -24,11 +25,9 @@ class Graph:
 
     nodes = []  # Keeping all nodes in a list to prevent duplicate nodes.
     maze = None
-    grid = []
 
-    def __init__(self, grid):
+    def __init__(self):
         # Creating the graph.
-        self.grid = grid
         self.maze = Maze()
         self.root = self.create_node(self.maze.start[0], self.maze.start[1])
 
@@ -51,29 +50,33 @@ class Graph:
         # Adding the node into the nodes list.
         self.nodes.append(node)
 
-        node.cost = 1
+        # Setting the cost 1 if it is not a trap square.
+        if self.maze.traps[node.x][node.y] == 1:
+            node.cost = 7
+        else:
+            node.cost = 1
 
         # Setting all child nodes.
-        if self.maze.can_pass(node.x, node.y, "east", self.grid):
+        if self.maze.can_pass(node.x, node.y, "east"):
             # Before creating a new node, we should check if that node exists. If yes, we don't need to create it.
             node.east = self.node_exists(node.x, node.y + 1)
             if node.east is None:
                 node.east = self.create_node(node.x, node.y + 1)
                 node.east.parent = node
 
-        if self.maze.can_pass(node.x, node.y, "south", self.grid):
+        if self.maze.can_pass(node.x, node.y, "south"):
             node.south = self.node_exists(node.x + 1, node.y)
             if node.south is None:
                 node.south = self.create_node(node.x + 1, node.y)
                 node.south.parent = node
 
-        if self.maze.can_pass(node.x, node.y, "west", self.grid):
+        if self.maze.can_pass(node.x, node.y, "west"):
             node.west = self.node_exists(node.x, node.y - 1)
             if node.west is None:
                 node.west = self.create_node(node.x, node.y - 1)
                 node.west.parent = node
 
-        if self.maze.can_pass(node.x, node.y, "north", self.grid):
+        if self.maze.can_pass(node.x, node.y, "north"):
             node.north = self.node_exists(node.x - 1, node.y)
             if node.north is None:
                 node.north = self.create_node(node.x - 1, node.y)

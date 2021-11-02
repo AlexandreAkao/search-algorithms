@@ -6,29 +6,36 @@ graph = None
 frontier = []
 visited = OrderedDict()  # To prevent duplicates, we use OrderedDict
 
+
 def depth_first_search():
     graph.clear_parents()
     dfs_bfs_ids_ucs("Depth First Search(DFS):")
+
 
 def breath_first_search():
     graph.clear_parents()
     dfs_bfs_ids_ucs("Breath First Search(BFS):")
 
+
 def iterative_deepening_search():
     graph.clear_parents()
     dfs_bfs_ids_ucs("Iterative Deepening Search(IDS):")
+
 
 def uniform_cost_search():
     graph.clear_parents()
     dfs_bfs_ids_ucs("Uniform Cost Search(UCS):")
 
+
 def greedy_best_first_search():
     graph.clear_parents()
     heuristic_search("Greedy Best First Search(GBFS):", return_heuristic)
 
+
 def a_star_search():
     graph.clear_parents()
     heuristic_search("A Star Search(A*):", return_cost_and_heuristic)
+
 
 def heuristic_search(algorithm, sort_by):
 
@@ -76,6 +83,7 @@ def heuristic_search(algorithm, sort_by):
         print_results(algorithm, solution_cost, solution, visited)
     else:
         print("No goal state found.")
+
 
 def dfs_bfs_ids_ucs(algorithm):
 
@@ -158,6 +166,7 @@ def dfs_bfs_ids_ucs(algorithm):
     # Print the results...
     print_results(algorithm, solution_cost, solution, expanded_nodes)
 
+
 def add_to_frontier(current_node, algorithm):
     # If the child nodes are not None AND if they are not in visited, we will add them to the frontier.
     nodes_to_add = []
@@ -179,22 +188,26 @@ def add_to_frontier(current_node, algorithm):
     for node in nodes_to_add:
         frontier.append(node)
 
+
 def set_parent(parent_node, child_node, algorithm):
     # We need to set the parent node it is None and if DFS is used.
     if "DFS" in algorithm or child_node.parent is None:
         child_node.parent = parent_node
     return child_node
 
+
 def is_in_visited(node):
     if node in visited:
         return True
     return False
+
 
 def is_goal(node):
     goal = graph.maze.goal
     if goal[0] == node.x and goal[1] == node.y:
         return True
     return False
+
 
 def print_results(algorithm, solution_cost, solution, expanded_nodes):
     print(algorithm)
@@ -215,14 +228,18 @@ def print_results(algorithm, solution_cost, solution, expanded_nodes):
             print(node, end=" ")
     print("\n")
 
+
 def return_cost(node):
     return node.cost
+
 
 def return_heuristic(node):
     return node.heuristic
 
+
 def return_cost_and_heuristic(node):
     return node.heuristic + node.cost
+
 
 def sort_frontier(sort_by):
     frontier.sort(key=sort_by)
