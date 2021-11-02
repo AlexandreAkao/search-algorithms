@@ -24,12 +24,10 @@ class Graph:
 
     nodes = []  # Keeping all nodes in a list to prevent duplicate nodes.
     maze = None
-    grid = []
 
-    def __init__(self, grid):
+    def __init__(self, grid, start, goal):
         # Creating the graph.
-        self.grid = grid
-        self.maze = Maze()
+        self.maze = Maze(grid, start, goal)
         self.root = self.create_node(self.maze.start[0], self.maze.start[1])
 
         # Finding maximum depth.
@@ -54,29 +52,29 @@ class Graph:
         node.cost = 1
 
         # Setting all child nodes.
-        if self.maze.can_pass(node.x, node.y, "east", self.grid):
+        if self.maze.can_pass(node.x, node.y, "east"):
             # Before creating a new node, we should check if that node exists. If yes, we don't need to create it.
-            node.east = self.node_exists(node.x, node.y + 1)
+            node.east = self.node_exists(node.x + 1, node.y)
             if node.east is None:
-                node.east = self.create_node(node.x, node.y + 1)
+                node.east = self.create_node(node.x + 1, node.y)
                 node.east.parent = node
 
-        if self.maze.can_pass(node.x, node.y, "south", self.grid):
-            node.south = self.node_exists(node.x + 1, node.y)
+        if self.maze.can_pass(node.x, node.y, "south"):
+            node.south = self.node_exists(node.x, node.y + 1)
             if node.south is None:
-                node.south = self.create_node(node.x + 1, node.y)
+                node.south = self.create_node(node.x, node.y + 1)
                 node.south.parent = node
 
-        if self.maze.can_pass(node.x, node.y, "west", self.grid):
-            node.west = self.node_exists(node.x, node.y - 1)
+        if self.maze.can_pass(node.x, node.y, "west"):
+            node.west = self.node_exists(node.x - 1, node.y)
             if node.west is None:
-                node.west = self.create_node(node.x, node.y - 1)
+                node.west = self.create_node(node.x - 1, node.y)
                 node.west.parent = node
 
-        if self.maze.can_pass(node.x, node.y, "north", self.grid):
-            node.north = self.node_exists(node.x - 1, node.y)
+        if self.maze.can_pass(node.x, node.y, "north"):
+            node.north = self.node_exists(node.x, node.y - 1)
             if node.north is None:
-                node.north = self.create_node(node.x - 1, node.y)
+                node.north = self.create_node(node.x, node.y - 1)
                 node.north.parent = node
 
         return node

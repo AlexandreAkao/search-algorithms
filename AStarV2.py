@@ -1,7 +1,9 @@
 import pygame
 import math
 from queue import PriorityQueue
+from graph import Graph
 from a_star import AStar
+from dfs import DFS
 
 WIDTH = 800
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
@@ -197,7 +199,7 @@ def get_clicked_pos(pos, rows, width):
     return row, col
 
 def main(window, width):
-    ROWS = 50
+    ROWS = 10
     grid = make_grid(ROWS, width)
 
     start = None
@@ -250,6 +252,10 @@ def main(window, width):
                     
                     #Lambda é uma variável que chama uma função
                     if start != None and end != None:
+                        graph = Graph(grid, start, end)
+                        # AStar(graph).solve()
+                        DFS(graph).solve()
+
                         a_star(lambda: draw(window, grid, ROWS, width), grid, start, end)
 
                 if event.key == pygame.K_ESCAPE:

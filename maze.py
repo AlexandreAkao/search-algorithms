@@ -1,32 +1,32 @@
 import re
 
 class Maze:
+    grid = []
     size = []
     start = []
     goal = []
 
-    def __init__(self):
-        self.create_maze([8, 8], [2, 1], [2, 6])
+    def __init__(self, grid, start, goal):
+        size = len(grid)
+        self.grid = grid
+        self.size = [size, size]
+        self.start = None if start == None else [start.row, start.col] 
+        self.goal = None if start == None else [goal.row, goal.col]
 
-    def create_maze(self, size, start, goal):
-        self.size = size
-        self.start = start
-        self.goal = goal
-
-    def can_pass(self, row, column, direction, grid):
+    def can_pass(self, row, column, direction):
         if direction == "east":
-            if column == (self.size[1] - 1):
+            if row >= (self.size[1] - 1):
                 return False
-            return grid[row + 1][column].make_barrier()
+            return not self.grid[row + 1][column].is_barrier()
         elif direction == "south":
-            if row == (self.size[0] - 1):
+            if column >= (self.size[0] - 1):
                 return False
-            return grid[row][column + 1].make_barrier()
+            return not self.grid[row][column + 1].is_barrier()
         elif direction == "west":
-            if column == 0:
+            if row <= 0:
                 return False
-            return grid[row - 1][column].make_barrier()
+            return not self.grid[row - 1][column].is_barrier()
         elif direction == "north":
-            if row == 0:
+            if column <= 0:
                 return False
-            return grid[row][column - 1].make_barrier()
+            return not self.grid[row][column - 1].is_barrier()
