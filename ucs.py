@@ -1,13 +1,12 @@
 from collections import OrderedDict
 
-
 class UCS:
     def __init__(self, graph):
         self.graph = graph
         self.frontier = []
         self.visited = OrderedDict()
 
-    def solve(self):
+    def solve(self, draw = None, reconstruct_path = None, expanded = None):
         pop_index = 0
         goal_state = None
         solution_cost = 0
@@ -28,32 +27,31 @@ class UCS:
 
                 current_node = self.frontier.pop(pop_index)
                 self.visited[current_node] = None
-
+                if expanded is not None:
+                    expanded(self.visited, self.frontier)
+                
                 if self.is_goal(current_node):
                     goal_state = current_node
                     break
 
                 self.add_to_frontier(current_node)
 
-            # Add all visited nodes to expanded nodes, before clearing it.
             for node in self.visited:
                 expanded_nodes.append(node)
 
-        # Check if DFS_BFS_IDS was successful...
         if goal_state is None:
             print("No goal state found.")
             return
 
-        # We need to calculate the cost of the solution AND get the solution itself...
         current = goal_state
         while current is not None:
             solution_cost += current.cost
             solution.insert(0, current)
-            # Get the parent node and continue...
             current = current.parent
 
-        # Print the results...
         self.print_results(solution_cost, solution, expanded_nodes)
+        if reconstruct_path is not None:
+            reconstruct_path(solution, self.graph.maze.grid, draw)
 
     def add_to_frontier(self, current_node):
         nodes_to_add = []

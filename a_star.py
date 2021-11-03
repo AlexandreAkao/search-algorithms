@@ -6,7 +6,12 @@ class AStar:
         self.frontier = []
         self.visited = OrderedDict()
 
-    def solve(self):
+    def printaaaa(self, nodes):
+        for node in nodes:
+            print(node.x, node.y, self.return_cost_and_heuristic(node))
+        print("------------------")
+
+    def solve(self, draw = None, reconstruct_path = None, expanded = None):
         sort_by = self.return_cost_and_heuristic
         goal_state = None
         solution_cost = 0
@@ -19,9 +24,12 @@ class AStar:
         while len(self.frontier) > 0:
 
             self.sort_frontier(sort_by)
+            # self.printaaaa(self.frontier)
             current_node = self.frontier.pop(0)
             self.visited[current_node] = None
-
+            if expanded is not None:
+                expanded(self.visited, self.frontier)
+                
             if self.is_goal(current_node):
                 goal_state = current_node
                 break
@@ -37,13 +45,15 @@ class AStar:
                 current = current.parent
 
             self.print_results(solution_cost, solution, self.visited)
+            if reconstruct_path is not None:
+                reconstruct_path(solution, self.graph.maze.grid, draw)
         else:
             print("No goal state found.")
 
     def return_cost_and_heuristic(self, node):
         return node.heuristic + node.cost
 
-    def add_to_frontier(self, current_node, draw = None):
+    def add_to_frontier(self, current_node):
         nodes_to_add = []
         if current_node.east is not None and not self.is_in_visited(current_node.east):
             nodes_to_add.append(self.set_parent(current_node, current_node.east))
@@ -56,14 +66,10 @@ class AStar:
 
         for node in nodes_to_add:
             self.frontier.append(node)
-            
-        if draw is not None:
-            draw()
 
     def set_parent(self, parent_node, child_node):
-        # We need to set the parent node it is None and if DFS is used.
-        if child_node.parent is None:
-            child_node.parent = parent_node
+        child_node.parent = parent_node
+        child_node.cost = parent_node.cost + 1
         return child_node
 
     def is_in_visited(self, node):
@@ -90,39 +96,3 @@ class AStar:
 
     def sort_frontier(self, sort_by):
         self.frontier.sort(key=sort_by)
-
-    def draw_solve(self, draw):
-        sort_by = self.return_cost_and_heuristic
-        goal_state = None
-        solution_cost = 0
-        solution = []
-
-        self.frontier.clear()
-        self.visited.clear()
-        self.frontier.append(self.graph.root)
-
-        while len(self.frontier) > 0:
-
-            self.sort_frontier(sort_by)
-            current_node = self.frontier.pop(0)
-            self.visited[current_node] = None
-
-            if self.is_goal(current_node):
-                goal_state = current_node
-                break
-
-            self.add_to_frontier(current_node, draw)
-
-        if goal_state is not None:
-
-            current = goal_state
-            while current is not None:
-                solution_cost += current.cost
-                solution.insert(0, current)
-                current = current.parent
-
-            self.print_results(solution_cost, solution, self.visited)
-        else:
-            print("No goal state found.")
-
-        return False

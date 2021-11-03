@@ -6,7 +6,7 @@ class BFS:
         self.frontier = []
         self.visited = OrderedDict()
 
-    def solve(self):
+    def solve(self, draw = None, reconstruct_path = None, expanded = None):
         pop_index = 0
         goal_state = None
         solution_cost = 0
@@ -23,6 +23,8 @@ class BFS:
             while len(self.frontier) > 0:
                 current_node = self.frontier.pop(pop_index)
                 self.visited[current_node] = None
+                if expanded is not None:
+                    expanded(self.visited, self.frontier)
 
                 if self.is_goal(current_node):
                     goal_state = current_node
@@ -44,6 +46,8 @@ class BFS:
             current = current.parent
 
         self.print_results(solution_cost, solution, expanded_nodes)
+        if reconstruct_path is not None:
+            reconstruct_path(solution, self.graph.maze.grid, draw)
 
     def is_goal(self, node):
         goal = self.graph.maze.goal

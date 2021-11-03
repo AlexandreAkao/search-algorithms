@@ -6,7 +6,7 @@ class GBFS:
         self.frontier = []
         self.visited = OrderedDict()
 
-    def solve(self):
+    def solve(self, draw = None, reconstruct_path = None, expanded = None):
         goal_state = None
         solution_cost = 0
         solution = []
@@ -21,6 +21,8 @@ class GBFS:
 
             current_node = self.frontier.pop(0)
             self.visited[current_node] = None
+            if expanded is not None:
+                expanded(self.visited, self.frontier)
 
             if self.is_goal(current_node):
                 goal_state = current_node
@@ -37,6 +39,8 @@ class GBFS:
                 current = current.parent
 
             self.print_results(solution_cost, solution, self.visited)
+            if reconstruct_path is not None:
+                reconstruct_path(solution, self.graph.maze.grid, draw)
         else:
             print("No goal state found.")
 

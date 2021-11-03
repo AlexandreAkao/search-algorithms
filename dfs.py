@@ -6,7 +6,7 @@ class DFS:
         self.frontier = []
         self.visited = OrderedDict()
 
-    def solve(self):
+    def solve(self, draw = None, reconstruct_path = None, expanded = None):
         goal_state = None
         solution_cost = 0
         solution = []
@@ -23,6 +23,8 @@ class DFS:
                 pop_index = len(self.frontier) - 1
                 current_node = self.frontier.pop(pop_index)
                 self.visited[current_node] = None
+                if expanded is not None:
+                    expanded(self.visited, self.frontier)
 
                 if self.is_goal(current_node):
                     goal_state = current_node
@@ -41,11 +43,11 @@ class DFS:
         while current is not None:
             solution_cost += current.cost
             solution.insert(0, current)
-            # Get the parent node and continue...
             current = current.parent
 
-        # Print the results...
         self.print_results(solution_cost, solution, expanded_nodes)
+        if reconstruct_path is not None:
+            reconstruct_path(solution, self.graph.maze.grid, draw)
 
     def is_goal(self, node):
         goal = self.graph.maze.goal
@@ -63,7 +65,6 @@ class DFS:
         return child_node
 
     def add_to_frontier(self, current_node):
-        # If the child nodes are not None AND if they are not in visited, we will add them to the frontier.
         nodes_to_add = []
         if current_node.east is not None and not self.is_in_visited(current_node.east):
             nodes_to_add.append(self.set_parent(current_node, current_node.east))
@@ -76,7 +77,6 @@ class DFS:
 
         nodes_to_add.reverse()
 
-        # Then add each node to the frontier.
         for node in nodes_to_add:
             self.frontier.append(node)
 
@@ -101,3 +101,4 @@ class DFS:
         for node in expanded_nodes:
             print(node, end=" ")
         print("\n")
+

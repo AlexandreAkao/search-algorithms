@@ -1,5 +1,3 @@
-import re
-
 class Maze:
     grid = []
     size = []
